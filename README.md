@@ -9,7 +9,7 @@
 
 ## 安装
 
-用有权访问本仓库的 GitHub 账号，在 Codex 中发送下面这条指令：
+在 Codex 中发送下面这条指令：
 
 ```text
 请用 $skill-installer 从 https://github.com/superlj666/research-writing-skills 安装 skills/3w2h 和 skills/thesis-logic。
@@ -34,7 +34,7 @@
 
 两个技能共用一个同步器。**调用任一技能时**，距上次成功检查或同步超过 48 小时，才连接 GitHub 检查 `main` 分支。同步器只替换上次同步后没有本地改动、且上游内容确实变化的 `SKILL.md`。若有本地改动，会报告对应技能并保留文件。
 
-首次使用时，从可访问本仓库的本机 Git 环境克隆仓库。在仓库根目录运行以下命令配置同步器：
+首次使用时，将本仓库克隆到本机。在仓库根目录运行以下命令配置同步器：
 
 ```bash
 sync_dir="${CODEX_HOME:-$HOME/.codex}/research-writing-skills"
@@ -43,4 +43,4 @@ cp scripts/sync-skills.py "$sync_dir/sync-skills.py"
 python3 "$sync_dir/sync-skills.py"
 ```
 
-新用户先安装两个技能，再配置同步器。同步器会登记与 GitHub 内容一致的本地版本。手动执行同步器时，添加 `--check` 可检查而不更新技能文件，添加 `--if-stale` 可按 48 小时规则检查。同步器需要 Git、Python 3、本机技能目录写权限和已有的 GitHub 仓库访问凭据。
+新用户先安装两个技能，再配置同步器。同步器会登记与 GitHub 内容一致的本地版本。手动执行同步器时，添加 `--check` 可检查而不更新技能文件，添加 `--if-stale` 可按 48 小时规则检查。同步器需要 Git、Python 3、本机技能目录写权限，以及访问 GitHub 的网络连接。
