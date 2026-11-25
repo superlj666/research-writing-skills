@@ -7,6 +7,17 @@ description: 按 Why、What、How、How Much、What Then 梳理单篇论文或�
 
 以单篇论文或单个独立研究点为单位，用同一个关键科学问题串起研究动机、核心贡献、方法、证据和结论。学位论文的总体论证、研究点之间的关系及跨点证据交给 `thesis-logic`。阅读时先还原论文实际的论证，再判断证据的支持力度。写作时根据项目进展组织论证，发现新证据时回看动机、贡献和结论是否需要修订。
 
+## 使用时检查版本
+
+开始处理用户任务前，若本机已配置 [research-writing-skills 同步器](https://github.com/superlj666/research-writing-skills#版本更新)，执行一次：
+
+```bash
+python3 "${CODEX_HOME:-$HOME/.codex}/research-writing-skills/sync-skills.py" --if-stale
+```
+
+同步器读取两个技能共用的上次成功检查时间。距上次成功检查或同步超过 48 小时，才访问 GitHub 并应用上游变化。若本技能已更新，重新读取本机的 `SKILL.md` 后继续。同步器缺失、检查失败或存在本地改动时，可用当前版本完成用户任务，并在需要时简要说明。用户明确要求立即检查时，可省略 `--if-stale`。
+
+
 ## 五项输出
 
 默认用下面五项顺序输出，可呈现为 Markdown 表格或五个短段。每项聚焦主线，保留决定结论的细节。用户只要求选题总表时，可将 How Much 拆成数据、对比方法、评测指标三列，并按表的要求省略 What Then。若最相关工作单列，写清它已做到什么、还有什么缺口有待本研究解决。
@@ -42,7 +53,3 @@ description: 按 Why、What、How、How Much、What Then 梳理单篇论文或�
 2. What 是否给出了能回答这个问题的贡献？How 的每项关键设计是否服务于它？
 3. How Much 最关键的对照或结果，能否同时回答科学问题并检验核心贡献？
 4. What Then 的结论是否与证据的强度和适用范围一致？
-
-## 版本同步
-
-本技能由 [research-writing-skills](https://github.com/superlj666/research-writing-skills) 维护。通过仓库的 [更新说明](https://github.com/superlj666/research-writing-skills#版本更新) 设置定期检查，或在需要时手动运行同步。用户要求更新时，使用仓库提供的同步脚本检查 GitHub 的 `main` 分支。发现本地改动时，先报告差异。

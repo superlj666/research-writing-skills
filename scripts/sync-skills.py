@@ -10,9 +10,11 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import time
 
 SOURCE = "https://github.com/superlj666/research-writing-skills.git"
 SKILLS = ("3w2h", "thesis-logic")
+CHECK_INTERVAL_SECONDS = 48 * 60 * 60
 
 
 def sha256(data):
@@ -70,15 +72,29 @@ def classify(path, upstream_sha, last_sha):
     return "local override"
 
 
-def synchronize(args, state_dir):
-    ledger = state_dir / "state.json"
-    if ledger.exists():
-        records = json.loads(ledger.read_text())
-        if records["source"] != args.source:
-            raise ValueError("The saved state belongs to another source repository.")
-    else:
-        records = {"source": args.source, "installed": {}}
+def load_state(ledger, source):
+    if not ledger.exists():
+        return {"source": source, "installed": {}}
+    records = json.loads(ledger.read_text())
+    if records["source"] != source:
+        raise ValueError("The saved state belongs to another source repository.")
+    return records
 
+
+def recently_checked(records):
+    age = time.time() - records.get("last_checked_at", 0)
+    return 0 <= age <= CHECK_INTERVAL_SECONDS
+
+
+def skip_recent_check(args, ledger):
+    if args.if_stale and recently_checked(load_state(ledger, args.source)):
+        print("Skipped: GitHub was checked within the last 48 hours.")
+        return True
+    return False
+
+
+def synchronize(args, ledger):
+    records = load_state(ledger, args.source)
     revision, upstream = load_upstream(args.source)
     print(f"GitHub main {revision}")
     unresolved = False
@@ -91,28 +107,33 @@ def synchronize(args, state_dir):
             replace_file(path, data)
             status = "updated"
         if status in ("up to date", "updated") and not args.check:
-            if installed.get(skill) != new_sha:
-                installed[skill] = new_sha
-                replace_file(ledger, (json.dumps(records, indent=2) + "\n").encode())
+            installed[skill] = new_sha
         unresolved |= status != "up to date" and status != "updated"
         print(f"{skill}: {status}")
+    records["last_checked_at"] = time.time()
+    replace_file(ledger, (json.dumps(records, indent=2) + "\n").encode())
     return 2 if unresolved else 0
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--check", action="store_true", help="Check without updating any file.")
+    parser.add_argument("--check", action="store_true", help="Check without updating skill files.")
+    parser.add_argument("--if-stale", action="store_true",
+                        help="Skip GitHub if successfully checked in the last 48 hours.")
     parser.add_argument("--codex-home", type=Path,
                         default=Path(os.environ.get("CODEX_HOME") or Path.home() / ".codex"))
     parser.add_argument("--source", default=SOURCE, help=argparse.SUPPRESS)
     args = parser.parse_args()
     state_dir = args.codex_home / "research-writing-skills"
-    if args.check:
-        return synchronize(args, state_dir)
+    ledger = state_dir / "state.json"
+    if skip_recent_check(args, ledger):
+        return 0
     state_dir.mkdir(parents=True, exist_ok=True)
     with (state_dir / "sync.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
-        return synchronize(args, state_dir)
+        if skip_recent_check(args, ledger):
+            return 0
+        return synchronize(args, ledger)
 
 
 if __name__ == "__main__":

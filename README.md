@@ -32,15 +32,15 @@
 
 ## 版本更新
 
-这两个技能可以用同一个脚本定期同步。脚本以 GitHub 的 `main` 分支为版本来源，只替换上次同步后没有本地改动、且上游内容确实发生变化的 `SKILL.md`。如有本地改动，脚本会保留文件并报出对应技能。两个技能可以分别更新。
+两个技能共用一个同步器。**调用任一技能时**，距上次成功检查或同步超过 48 小时，才连接 GitHub 检查 `main` 分支。同步器只替换上次同步后没有本地改动、且上游内容确实变化的 `SKILL.md`。若有本地改动，会报告对应技能并保留文件。
 
-用具备私有仓库访问权限的账号克隆仓库后，在仓库根目录运行：
+首次使用时，从可访问本仓库的本机 Git 环境克隆仓库。在仓库根目录运行以下命令配置同步器：
 
 ```bash
-python3 scripts/sync-skills.py         # 检查并同步
-python3 scripts/sync-skills.py --check # 只检查
+sync_dir="${CODEX_HOME:-$HOME/.codex}/research-writing-skills"
+mkdir -p "$sync_dir"
+cp scripts/sync-skills.py "$sync_dir/sync-skills.py"
+python3 "$sync_dir/sync-skills.py"
 ```
 
-第一次同步会登记与 GitHub 内容一致的本地版本。新用户先按上文安装技能，再运行同步脚本。已改过本地文件时，可以先另存自己的修改，再与仓库版本合并。
-
-需要自动更新时，在 Codex 中创建每天或每周运行一次的本地自动化，指定克隆仓库中同步脚本的绝对路径，并让该任务沿用已有的 GitHub 登录。脚本需要 Git、Python 3，以及对本机 Codex 技能目录的写权限。安排自动化时可以选择仅在失败时通知。
+新用户先安装两个技能，再配置同步器。同步器会登记与 GitHub 内容一致的本地版本。手动执行同步器时，添加 `--check` 可检查而不更新技能文件，添加 `--if-stale` 可按 48 小时规则检查。同步器需要 Git、Python 3、本机技能目录写权限和已有的 GitHub 仓库访问凭据。
