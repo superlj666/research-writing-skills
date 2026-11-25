@@ -42,3 +42,7 @@ description: 按 Why、What、How、How Much、What Then 梳理单篇论文或�
 2. What 是否给出了能回答这个问题的贡献？How 的每项关键设计是否服务于它？
 3. How Much 最关键的对照或结果，能否同时回答科学问题并检验核心贡献？
 4. What Then 的结论是否与证据的强度和适用范围一致？
+
+## 版本同步
+
+本技能由 [research-writing-skills](https://github.com/superlj666/research-writing-skills) 维护。通过仓库的 [更新说明](https://github.com/superlj666/research-writing-skills#版本更新) 设置定期检查，或在需要时手动运行同步。用户要求更新时，使用仓库提供的同步脚本检查 GitHub 的 `main` 分支。发现本地改动时，先报告差异。
