@@ -9,6 +9,15 @@
 
 ## 安装
 
+### 下载 ZIP
+
+- [下载 3w2h.zip](https://raw.githubusercontent.com/superlj666/research-writing-skills/main/downloads/3w2h.zip)
+- [下载 thesis-logic.zip](https://raw.githubusercontent.com/superlj666/research-writing-skills/main/downloads/thesis-logic.zip)
+
+支持导入自定义技能的平台可以分别上传 ZIP。也可以把下载链接发给支持下载安装技能的助手，请它安装对应技能。
+
+### Codex 安装方式
+
 在 Codex 中发送下面这条指令：
 
 ```text
